@@ -1,23 +1,28 @@
+using StringCalculator.Test.Utilities;
+
 namespace StringCalculator.Test
 {
-    public class UnitTest1
+    public class InterpréteurTest
     {
-        /*
-         * Créez une méthode int Add(string numbers) prenant un string de forme
-         * « x,y » et renvoyant l’entier x+y.
-         */
+        private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, uint.MaxValue};
 
-        [Fact]
-        public void TestAdd0Et0()
+        public static IEnumerable<object[]> CasAdd 
+            => new CartesianAddition(
+                NombresEntiersNonSignésRemarquables.WithRandomCase(), 
+                NombresEntiersNonSignésRemarquables.WithRandomCase());
+
+        [Theory]
+        [MemberData(nameof(CasAdd))]
+        public void TestAdd(uint a, uint b)
         {
-            // ETANT DONNE une chaîne 0,0
-            const string chaîne = "0,0";
+            // ETANT DONNE une chaîne a,b
+            var chaîne = $"{a},{b}";
 
             // QUAND on l'interprète avec la méthode Add
             var résultat = Interpréteur.Add(chaîne);
 
-            // ALORS 0 est renvoyé
-            Assert.Equal(0U, résultat);
+            // ALORS a+b est renvoyé
+            Assert.Equal(a + b, résultat);
         }
     }
 }
