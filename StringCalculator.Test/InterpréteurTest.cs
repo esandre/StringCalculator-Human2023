@@ -1,4 +1,3 @@
-using System.Text;
 using StringCalculator.Test.Utilities;
 
 namespace StringCalculator.Test
@@ -7,7 +6,6 @@ namespace StringCalculator.Test
     {
         private const int MaximumElementsRéaliste = 10;
         private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, uint.MaxValue};
-        private static readonly int[] NombresElementsRemarquables = {2, 3, MaximumElementsRéaliste };
 
         private static IEnumerable<object[]> CasAdd(int n)
             // ReSharper disable once CoVariantArrayConversion
