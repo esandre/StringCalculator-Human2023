@@ -4,7 +4,8 @@ public static class Interpréteur
 {
     public static uint Add(string chaîne)
     {
-        var parts = chaîne.Split(',');
-        return parts.Select(uint.Parse).Sum();
+        var partsAsString = chaîne.Split(',');
+        var partsAsUint = partsAsString.Select(uint.Parse);
+        return partsAsUint.Sum();
     }
 }
