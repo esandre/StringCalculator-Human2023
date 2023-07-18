@@ -1,47 +1,59 @@
 using StringCalculator.Test.Utilities;
 
-namespace StringCalculator.Test
+namespace StringCalculator.Test;
+
+public class InterpréteurTest
 {
-    public class InterpréteurTest
-    {
-        private const int MaximumElementsRéaliste = 10;
-        private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, uint.MaxValue};
+    private const int MaximumElementsRéaliste = 10;
+    private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, uint.MaxValue};
 
-        private static IEnumerable<object[]> CasAdd(int n)
-            // ReSharper disable once CoVariantArrayConversion
-            => new CartesianAddition(Enumerable
-                .Range(1, n)
-                .Select(_ => NombresEntiersNonSignésRemarquables.WithRandomCase())
-                .ToArray());
+    private static IEnumerable<object[]> CasAdd(int n)
+        // ReSharper disable once CoVariantArrayConversion
+        => new CartesianAddition(Enumerable
+            .Range(1, n)
+            .Select(_ => NombresEntiersNonSignésRemarquables.WithRandomCase())
+            .ToArray());
 
-        public static IEnumerable<object[]> CasAddTwo => CasAdd(2);
-        public static IEnumerable<object[]> CasAddThree => CasAdd(3);
+    public static IEnumerable<object[]> CasAddTwo => CasAdd(2);
+    public static IEnumerable<object[]> CasAddThree => CasAdd(3);
 
-        public static IEnumerable<object[]> CasAddMax =>
-            new []
-            {
-                Enumerable
-                    .Range(0, MaximumElementsRéaliste)
-                    .Select(_ => Random.Shared.NextUint())
-                    .Cast<object>() // HACK : Magie, ne pas faire attention.
-                    .ToArray()
-            };
-
-        [Theory]
-        [MemberData(nameof(CasAddTwo))]
-        [MemberData(nameof(CasAddThree))]
-        [MemberData(nameof(CasAddMax))]
-        public void TestAddN(params uint[] elements)
+    public static IEnumerable<object[]> CasAddMax =>
+        new []
         {
-            // ETANT DONNE une chaîne a,b,c...
-            var chaîne = string.Join(',', elements);
-            var résultatAttendu = elements.Sum();
+            Enumerable
+                .Range(0, MaximumElementsRéaliste)
+                .Select(_ => Random.Shared.NextUint())
+                .Cast<object>() // HACK : Magie, ne pas faire attention.
+                .ToArray()
+        };
 
-            // QUAND on l'interprète avec la méthode Add
-            var résultatObtenu = Interpréteur.Add(chaîne);
+    [Theory]
+    [MemberData(nameof(CasAddTwo))]
+    [MemberData(nameof(CasAddThree))]
+    [MemberData(nameof(CasAddMax))]
+    public void TestAddN(params uint[] elements)
+    {
+        // ETANT DONNE une chaîne a,b,c...
+        var chaîne = string.Join(',', elements);
+        var résultatAttendu = elements.Sum();
 
-            // ALORS la somme des élements est renvoyée
-            Assert.Equal(résultatAttendu, résultatObtenu);
-        }
+        // QUAND on l'interprète avec la méthode Add
+        var résultatObtenu = Interpréteur.Add(chaîne);
+
+        // ALORS la somme des élements est renvoyée
+        Assert.Equal(résultatAttendu, résultatObtenu);
+    }
+
+    [Fact]
+    public void ExceptionSiNégatifTest()
+    {
+        // ETANT DONNE une chaîne représentant un nombre négatif
+        const string chaîne = "-1";
+
+        // QUAND on l'interprète avec la méthode Add
+        static void Act() => Interpréteur.Add(chaîne);
+
+        // ALORS une exception NombreNégatifException est lancée
+        Assert.Throws<NombreNégatifException>(Act);
     }
 }
