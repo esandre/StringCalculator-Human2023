@@ -2,7 +2,7 @@
 
 public static class Interpréteur
 {
-    private const char DélimiteurParDéfaut = ',';
+    private const string DélimiteurParDéfaut = ",";
     private const string PréfixeDélimiteur = "//";
 
     public static uint Add(string chaîne)
@@ -14,8 +14,7 @@ public static class Interpréteur
             var lignes = chaîne.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             var ligneDélimiteur = lignes[0];
             délimiteur = ligneDélimiteur
-                .Replace(PréfixeDélimiteur, string.Empty)
-                .Single();
+                .Replace(PréfixeDélimiteur, string.Empty);
 
             chaîne = lignes.Last();
         }

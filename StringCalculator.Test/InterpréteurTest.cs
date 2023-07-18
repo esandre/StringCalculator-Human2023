@@ -106,14 +106,17 @@ public class InterpréteurTest
         Assert.Equal(résultatTémoin, résultatObtenu);
     }
 
-    [Fact]
-    public void ChangementDélimiteurTest()
+    [Theory]
+    [InlineData("#")]
+    [InlineData("|-")]
+    [InlineData("💀🎃")]
+    public void ChangementDélimiteurTest(string délimitateur)
     {
-        // ETANT DONNE une chaîne dont la première ligne est //#
-        const string premièreLigne = "//#";
+        // ETANT DONNE une chaîne dont la première ligne est //<délimitateur>
+        var premièreLigne = $"//{délimitateur}";
 
-        // ET la ligne suivante 1#2
-        const string secondeLigne = "1#2";
+        // ET la ligne suivante 1<délimitateur>2
+        var secondeLigne = $"1{délimitateur}2";
         var chaîneOriginale = premièreLigne + Environment.NewLine + secondeLigne;
 
         // QUAND on l'interprète avec la méthode Add
