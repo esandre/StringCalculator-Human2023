@@ -48,13 +48,17 @@ public class InterpréteurTest
     public void ExceptionSiNégatifTest()
     {
         // ETANT DONNE une chaîne représentant un nombre négatif
-        const string chaîne = "-1";
+        const string nombreNégatif = "-1";
+        const string chaîne = "0," + nombreNégatif;
+        const int positionNombreNégatif = 2;
 
         // QUAND on l'interprète avec la méthode Add
         static void Act() => Interpréteur.Add(chaîne);
 
-        // ALORS une exception NombreNégatifException indiquant le nombre fautif est lancée
+        // ALORS une exception NombreNégatifException indiquant le nombre fautif
+        // et sa position est lancée
         var catchedException = Assert.Throws<NombreNégatifException>(Act);
-        Assert.Contains(chaîne, catchedException.Message);
+        Assert.Contains(nombreNégatif, catchedException.Message);
+        Assert.Contains(positionNombreNégatif.ToString(), catchedException.Message);
     }
 }

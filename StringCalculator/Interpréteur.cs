@@ -4,20 +4,26 @@ public static class Interpréteur
 {
     public static uint Add(string chaîne)
     {
-        var partsAsString = chaîne.Split(',');
-        var partsAsUint = partsAsString.Select(ParseOrThrow);
+        var partsAsString = chaîne
+            .Replace(" ", string.Empty)
+            .Split(',');
+
+        var index = 0U;
+        var partsAsUint = partsAsString
+            .Select(str => ParseOrThrow(++index, str));
+
         return partsAsUint.Sum();
     }
 
-    private static uint ParseOrThrow(string représentation)
+    private static uint ParseOrThrow(uint index, string nombre)
     {
         try
         {
-            return uint.Parse(représentation);
+            return uint.Parse(nombre);
         }
         catch (OverflowException e)
         {
-            throw new NombreNégatifException(représentation, e);
+            throw new NombreNégatifException(nombre, index, e);
         }
     }
 }
