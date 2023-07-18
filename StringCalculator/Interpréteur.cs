@@ -10,7 +10,9 @@ public static class Interpréteur
 
         var index = 0U;
         var partsAsUint = partsAsString
-            .Select(str => ParseOrThrow(++index, str));
+            .ToDictionary(_ => ++index, str => str)
+            .AsParallel()
+            .Select(dict => ParseOrThrow(dict.Key, dict.Value));
 
         return partsAsUint.Sum();
     }

@@ -57,8 +57,31 @@ public class InterpréteurTest
 
         // ALORS une exception NombreNégatifException indiquant le nombre fautif
         // et sa position est lancée
-        var catchedException = Assert.Throws<NombreNégatifException>(Act);
-        Assert.Contains(nombreNégatif, catchedException.Message);
-        Assert.Contains(positionNombreNégatif.ToString(), catchedException.Message);
+        var catchedException = Assert.Throws<AggregateException>(Act).InnerException!;
+        Assert.Equal(NombreNégatifException.MakeMessage("-1", positionNombreNégatif), catchedException.Message);
+    }
+
+    [Fact]
+    public void ExceptionSiPlusieursNégatifsTest()
+    {
+        // ETANT DONNE une chaîne représentant deux nombres négatifs
+        var nombresNégatifs = new[] { -1, -2 };
+        var chaîne = string.Join(',', nombresNégatifs);
+
+        // QUAND on l'interprète avec la méthode Add
+        void Act() => Interpréteur.Add(chaîne);
+
+        // ALORS une exception AggregateException est lancée avec 2 InnerException
+        // indiquant les nombres fautifs et leur position
+        var catchedException = Assert.Throws<AggregateException>(Act);
+        var inners = catchedException
+            .InnerExceptions
+            .OfType<NombreNégatifException>()
+            .OrderBy(inner => inner.Message)
+            .ToArray();
+
+        Assert.Equal(2, inners.Length);
+        Assert.Equal(NombreNégatifException.MakeMessage("-1", 1), inners[0].Message);
+        Assert.Equal(NombreNégatifException.MakeMessage("-2", 2), inners[1].Message);
     }
 }
