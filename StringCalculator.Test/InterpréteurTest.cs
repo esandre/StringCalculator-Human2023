@@ -6,13 +6,15 @@ public class InterpréteurTest
 {
     private const int MaximumElementsRéaliste = 10;
     private const uint NombreSignificatifMaximal = 1000;
-    private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, NombreSignificatifMaximal };
+    private static readonly uint[] NombresEntiersNonSignésRemarquables 
+        = {0U, 1U, NombreSignificatifMaximal };
 
     private static IEnumerable<object[]> CasAdd(int n)
         // ReSharper disable once CoVariantArrayConversion
         => new CartesianAddition(Enumerable
             .Range(1, n)
-            .Select(_ => NombresEntiersNonSignésRemarquables.WithRandomCase(NombreSignificatifMaximal))
+            .Select(_ => NombresEntiersNonSignésRemarquables
+                .WithRandomCase(NombreSignificatifMaximal))
             .ToArray());
 
     public static IEnumerable<object[]> CasAddTwo => CasAdd(2);
@@ -99,6 +101,26 @@ public class InterpréteurTest
 
         // ALORS le résultat est le même que si x était remplacé par zéro
         var chaîneTémoin = string.Join(',', new[] { 1U, 0U });
+        var résultatTémoin = Interpréteur.Add(chaîneTémoin);
+
+        Assert.Equal(résultatTémoin, résultatObtenu);
+    }
+
+    [Fact]
+    public void ChangementDélimiteurTest()
+    {
+        // ETANT DONNE une chaîne dont la première ligne est //#
+        const string premièreLigne = "//#";
+
+        // ET la ligne suivante 1#2
+        const string secondeLigne = "1#2";
+        var chaîneOriginale = premièreLigne + Environment.NewLine + secondeLigne;
+
+        // QUAND on l'interprète avec la méthode Add
+        var résultatObtenu = Interpréteur.Add(chaîneOriginale);
+
+        // ALORS on obtient la même chose qu'avec la chaîne 1,2
+        const string chaîneTémoin = "1,2";
         var résultatTémoin = Interpréteur.Add(chaîneTémoin);
 
         Assert.Equal(résultatTémoin, résultatObtenu);

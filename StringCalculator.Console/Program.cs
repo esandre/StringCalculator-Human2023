@@ -1,4 +1,17 @@
-﻿using StringCalculator;
+﻿using System.Text;
+using StringCalculator;
 
 Console.Write('>');
-Console.WriteLine(Interpréteur.Add(Console.ReadLine() ?? string.Empty));
+
+var lines = new StringBuilder();
+
+var canWork = false;
+while(!canWork)
+{
+    var line = Console.ReadLine() ?? string.Empty;
+    canWork = !line.StartsWith("//");
+
+    lines.AppendLine(line);
+}
+
+Console.WriteLine(Interpréteur.Add(lines.ToString()));

@@ -2,11 +2,27 @@
 
 public static class Interpréteur
 {
+    private const char DélimiteurParDéfaut = ',';
+    private const string PréfixeDélimiteur = "//";
+
     public static uint Add(string chaîne)
     {
+        var délimiteur = DélimiteurParDéfaut;
+
+        if(chaîne.StartsWith(PréfixeDélimiteur))
+        {
+            var lignes = chaîne.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+            var ligneDélimiteur = lignes[0];
+            délimiteur = ligneDélimiteur
+                .Replace(PréfixeDélimiteur, string.Empty)
+                .Single();
+
+            chaîne = lignes.Last();
+        }
+
         var partsAsString = chaîne
             .Replace(" ", string.Empty)
-            .Split(',');
+            .Split(délimiteur);
 
         var index = 0U;
         var partsAsUint = partsAsString
