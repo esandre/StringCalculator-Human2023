@@ -7,21 +7,27 @@ public static class Interpréteur
 
     public static uint Add(string chaîne)
     {
-        var délimiteur = DélimiteurParDéfaut;
+        var délimiteurs = new [] { DélimiteurParDéfaut };
 
         if(chaîne.StartsWith(PréfixeDélimiteur))
         {
             var lignes = chaîne.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-            var ligneDélimiteur = lignes[0];
-            délimiteur = ligneDélimiteur
+            var ligneDélimiteurs = lignes[0]
                 .Replace(PréfixeDélimiteur, string.Empty);
+
+            délimiteurs = ligneDélimiteurs.Split(',');
 
             chaîne = lignes.Last();
         }
 
-        var partsAsString = chaîne
-            .Replace(" ", string.Empty)
-            .Split(délimiteur);
+        chaîne = chaîne
+            .Replace(" ", string.Empty);
+
+        chaîne = délimiteurs.Aggregate(chaîne,
+            (current, délimiteur) => current.Replace(délimiteur, ",")
+        );
+
+        var partsAsString = chaîne.Split(',');
 
         var index = 0U;
         var partsAsUint = partsAsString

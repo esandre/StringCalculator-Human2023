@@ -128,4 +128,24 @@ public class InterpréteurTest
 
         Assert.Equal(résultatTémoin, résultatObtenu);
     }
+
+    [Fact]
+    public void PlusieursDélimiteursTest()
+    {
+        // ETANT DONNE une chaîne dont la première ligne est //#,|-
+        const string premièreLigne = "//#,|-";
+
+        // ET la ligne suivante 1#2|-3
+        const string secondeLigne = "1#2|-3";
+        var chaîneOriginale = premièreLigne + Environment.NewLine + secondeLigne;
+
+        // QUAND on l'interprète avec la méthode Add
+        var résultatObtenu = Interpréteur.Add(chaîneOriginale);
+
+        // ALORS on obtient la même chose qu'avec la chaîne 1,2,3
+        const string chaîneTémoin = "1,2,3";
+        var résultatTémoin = Interpréteur.Add(chaîneTémoin);
+
+        Assert.Equal(résultatTémoin, résultatObtenu);
+    }
 }
