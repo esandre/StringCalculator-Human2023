@@ -2,8 +2,8 @@
 
 public class NombreNégatifException : Exception
 {
-    internal NombreNégatifException(OverflowException inner)
-        : base("Nombre négatif !" ,inner)
+    internal NombreNégatifException(string nombre, OverflowException inner)
+        : base($"Nombre négatif : {nombre} !" ,inner)
     {
     }
 }

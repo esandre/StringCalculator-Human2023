@@ -53,7 +53,8 @@ public class InterpréteurTest
         // QUAND on l'interprète avec la méthode Add
         static void Act() => Interpréteur.Add(chaîne);
 
-        // ALORS une exception NombreNégatifException est lancée
-        Assert.Throws<NombreNégatifException>(Act);
+        // ALORS une exception NombreNégatifException indiquant le nombre fautif est lancée
+        var catchedException = Assert.Throws<NombreNégatifException>(Act);
+        Assert.Contains(chaîne, catchedException.Message);
     }
 }
