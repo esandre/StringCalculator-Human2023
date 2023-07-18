@@ -5,13 +5,14 @@ namespace StringCalculator.Test;
 public class InterpréteurTest
 {
     private const int MaximumElementsRéaliste = 10;
-    private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, uint.MaxValue};
+    private const uint NombreSignificatifMaximal = 1000;
+    private static readonly uint[] NombresEntiersNonSignésRemarquables = {0U, 1U, NombreSignificatifMaximal };
 
     private static IEnumerable<object[]> CasAdd(int n)
         // ReSharper disable once CoVariantArrayConversion
         => new CartesianAddition(Enumerable
             .Range(1, n)
-            .Select(_ => NombresEntiersNonSignésRemarquables.WithRandomCase())
+            .Select(_ => NombresEntiersNonSignésRemarquables.WithRandomCase(NombreSignificatifMaximal))
             .ToArray());
 
     public static IEnumerable<object[]> CasAddTwo => CasAdd(2);
@@ -22,7 +23,7 @@ public class InterpréteurTest
         {
             Enumerable
                 .Range(0, MaximumElementsRéaliste)
-                .Select(_ => Random.Shared.NextUint())
+                .Select(_ => Random.Shared.NextUint(NombreSignificatifMaximal))
                 .Cast<object>() // HACK : Magie, ne pas faire attention.
                 .ToArray()
         };
@@ -83,5 +84,23 @@ public class InterpréteurTest
         Assert.Equal(2, inners.Length);
         Assert.Equal(NombreNégatifException.MakeMessage("-1", 1), inners[0].Message);
         Assert.Equal(NombreNégatifException.MakeMessage("-2", 2), inners[1].Message);
+    }
+
+    [Theory]
+    [InlineData(NombreSignificatifMaximal + 1)]
+    [InlineData(uint.MaxValue)]
+    public void LesNombresSupérieursA1000NeComptentPas(uint nombreTesté)
+    {
+        // ETANT DONNE une chaîne 1,x où x est strictement supérieur à 1000
+        var chaîneOriginale = string.Join(',', new [] {1U, nombreTesté});
+
+        // QUAND on l'interprète avec la méthode Add
+        var résultatObtenu = Interpréteur.Add(chaîneOriginale);
+
+        // ALORS le résultat est le même que si x était remplacé par zéro
+        var chaîneTémoin = string.Join(',', new[] { 1U, 0U });
+        var résultatTémoin = Interpréteur.Add(chaîneTémoin);
+
+        Assert.Equal(résultatTémoin, résultatObtenu);
     }
 }

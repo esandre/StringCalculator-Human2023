@@ -12,7 +12,8 @@ public static class Interpréteur
         var partsAsUint = partsAsString
             .ToDictionary(_ => ++index, str => str)
             .AsParallel()
-            .Select(dict => ParseOrThrow(dict.Key, dict.Value));
+            .Select(dict => ParseOrThrow(dict.Key, dict.Value))
+            .Where(nombre => nombre <= 1000);
 
         return partsAsUint.Sum();
     }

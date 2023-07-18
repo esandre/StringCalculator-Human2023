@@ -2,17 +2,15 @@
 
 internal static class RandomTestingExtensions
 {
-    public static IEnumerable<uint> WithRandomCase(this IEnumerable<uint> original)
+    public static IEnumerable<uint> WithRandomCase(this IEnumerable<uint> original, uint max = uint.MaxValue)
     {
         var random = new Random();
-        return original.Append(random.NextUint());
+        return original.Append(random.NextUint(max));
     }
 
-    public static uint NextUint(this Random random)
+    public static uint NextUint(this Random random, uint max = uint.MaxValue)
     {
-        var uintBytes = new byte[4];
-        random.NextBytes(uintBytes);
-
-        return BitConverter.ToUInt32(uintBytes);
+        var randomFloat = random.NextSingle();
+        return (uint) Math.Round(max * randomFloat);
     }
 }
